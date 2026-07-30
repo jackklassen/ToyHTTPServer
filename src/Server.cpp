@@ -24,7 +24,7 @@ void Server::bindAndListen() {
     char buffer[1024] = {0};
     recv(clientSocket, buffer,sizeof(buffer) - 1, 0);
 
-    std::cout<<buffer<<std::endl;
+    std::cout<<std::string(buffer)<<std::endl;
 
     std::string body = "<h1>hello</h1> <p> I am an HTTP thingy </p>";
     HTTPhandler handler;

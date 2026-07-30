@@ -15,7 +15,9 @@
 class Server {
     private:
     int serverSocket;
-    sockaddr_in serverAddress;
+    const int port = 9000;
+    sockaddr_in serverAddress{};
+
     public:
     Server();
 

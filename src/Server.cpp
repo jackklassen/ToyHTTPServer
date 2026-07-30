@@ -8,7 +8,7 @@
 Server::Server() {
         serverSocket = socket(AF_INET, SOCK_STREAM, 0);
         serverAddress.sin_family = AF_INET;
-        serverAddress.sin_port = htons(9000);
+        serverAddress.sin_port = htons(port);
         serverAddress.sin_addr.s_addr = INADDR_ANY;
 }
 
@@ -20,20 +20,24 @@ void Server::bindAndListen() {
 
     listen(serverSocket, 5);
 
-    int clientSocket = accept(serverSocket, nullptr,nullptr);
-    char buffer[1024] = {0};
-    recv(clientSocket, buffer,sizeof(buffer) - 1, 0);
+    std::cout << "Hosting Server at http://localhost:" << port << "/" <<  std::endl;
 
-    std::cout<<std::string(buffer)<<std::endl;
+    while (true) {
+        int clientSocket = accept(serverSocket, nullptr,nullptr);
+        char buffer[1024] = {0};
+        int bytes_received =  recv(clientSocket, buffer,sizeof(buffer) - 1, 0);
 
-    std::string body = "<h1>hello</h1> <p> I am an HTTP thingy </p>";
-    HTTPhandler handler;
+        std::cout << "Client connected with request: " << std::endl << buffer << std::endl;
 
-    std::string response = handler.response(body,200,"text/html; charset=utf-8").data();
+        std::string body = "<h1>hello</h1> <p> I am an HTTP thingy </p>";
+        HTTPhandler handler;
+
+        std::string response = handler.response(body,200,"text/html; charset=utf-8").data();
 
 
-    send(clientSocket,response.c_str(), response.length(), 0);
-
-
+        send(clientSocket,response.c_str(), response.length(), 0);
+        close(clientSocket);
+    }
+    close(serverSocket);
 }
 

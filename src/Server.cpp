@@ -4,6 +4,8 @@
 
 #include "Server.h"
 #include "HTTPhandler.h"
+#include <sstream>
+#include <string>
 
 Server::Server() {
         serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -29,11 +31,16 @@ void Server::bindAndListen() {
 
         std::cout << "Client connected with request: " << std::endl << buffer << std::endl;
 
+        HTTPhandler handler = HTTPhandler();
+
+
+
+        HTTPHeader RequestHeader = HTTPhandler::getHTTPHeader(buffer);
+
         std::string body = "<h1>hello</h1> <p> I am an HTTP thingy </p>";
-        HTTPhandler handler;
 
-        std::string response = handler.response(body,200,"text/html; charset=utf-8").data();
 
+        std::string response = handler.response( body, RequestHeader, "text/html" );
 
         send(clientSocket,response.c_str(), response.length(), 0);
         close(clientSocket);

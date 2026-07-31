@@ -8,18 +8,21 @@
 #include <format>
 #include <map>
 
-class HTTPHeader {
-public:
-    std::string method;
-    int code;
-    std::string uri;
+struct HTTPHeader {
+    std::string method = "";
+    int code = 400;
+    std::string content_type = "text/plain";
+    std::string uri = "";
 };
 
 class HTTPhandler {
 
     private:
     std::map<int, std::string> StatusCode {
-          {200, "OK"}
+          {200, "OK"},
+        {400, "Bad Request"},
+        {500, "Internal Server Error"},
+        {599, "Request Header Missing"}
     };
     public:
 
@@ -28,11 +31,12 @@ class HTTPhandler {
      * takes in body, code and content type and spits out a valid HTTP response
      *
      * @param body
+     * @param request
      * @param code
      * @param content_type
      * @return assembled HTTP respose
      */
-    std::string response(std::string body, int code = 200, std::string content_type = "text/plain");
+    std::string response(const std::string& body = "I need a body", const HTTPHeader& request = {"BAD", 599,"",""}, std::string content_type = "text/plain");
 
     /**
      * function to take raw client data in and
@@ -40,7 +44,10 @@ class HTTPhandler {
      * @param raw_data
      * @return
      */
-    HTTPHeader getHTTPHeader(char* raw_data);
+    static HTTPHeader getHTTPHeader(char* raw_data);
+
+
+
 };
 
 

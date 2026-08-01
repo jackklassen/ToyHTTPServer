@@ -26,6 +26,13 @@ class HTTPhandler {
     };
     public:
 
+    /**
+     *
+     * @param request
+     * @param code
+     * @return
+     */
+    int DetermineCode(const HTTPHeader &request);
 
     /**
      * takes in body, code and content type and spits out a valid HTTP response
@@ -37,6 +44,13 @@ class HTTPhandler {
      * @return assembled HTTP respose
      */
     std::string response(const std::string& body = "I need a body", const HTTPHeader& request = {"BAD", 599,"",""}, std::string content_type = "text/plain");
+
+    /**
+     *
+     * @param string_to_split
+     * @return
+     */
+    static std::vector<std::string> SplitAtSpace(std::string string_to_split);
 
     /**
      * function to take raw client data in and

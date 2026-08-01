@@ -6,12 +6,10 @@
 
 #include <iostream>
 #include <ostream>
+#include <sstream>
 
-std::string HTTPhandler::response(const std::string& body, const HTTPHeader& request, std::string content_type) {
-    int code = 500;
-
-
-    //as this bloats it should be excised into another function.
+int HTTPhandler::DetermineCode(const HTTPHeader &request) {
+    int code = 500; //By Default something went wrong.
     if (request.method == "BAD") {
         code = 500; //server error
     }else {
@@ -24,6 +22,13 @@ std::string HTTPhandler::response(const std::string& body, const HTTPHeader& req
             code = 400; //client bad request
         }
     }
+    return code;
+}
+
+std::string HTTPhandler::response(const std::string& body, const HTTPHeader& request, std::string content_type) {
+    int code = 500;
+
+    code = DetermineCode(request);
 
 
     std::string response = "HTTP/1.1 " + std::to_string(code) + " " +  StatusCode[code] +  "\r\n" +
@@ -31,9 +36,19 @@ std::string HTTPhandler::response(const std::string& body, const HTTPHeader& req
                            std::format("Content-Length: {}\r\n", body.length()) +
                            "Connection: close\r\n" + "\r\n";
     std::cout << response;
-    //its not properly sending right respose given request also when errors happen it should respond with error message
+    // when errors happen it should respond with error message
 
     return response + body;
+}
+
+std::vector<std::string> HTTPhandler::SplitAtSpace(std::string string_to_split) {
+    std::stringstream string_stream(string_to_split);
+    std::vector<std::string> string_split;
+    std::string splitting_string;
+    while (getline(string_stream, splitting_string, ' ')) {
+        string_split.push_back(splitting_string);
+    }
+    return string_split;
 }
 
 HTTPHeader HTTPhandler::getHTTPHeader(char *raw_data) {
@@ -47,6 +62,10 @@ HTTPHeader HTTPhandler::getHTTPHeader(char *raw_data) {
         httpHeader.method = "GET";
     }
 
+    std::vector<std::string> first_part_split = SplitAtSpace(first_part);
+    httpHeader.uri = first_part_split[1];
+    std::cout << "URI looks like: " << httpHeader.uri << std::endl;
+
     //this is not carefully grabbing just the accept but instead grabs only a chunk of chars
     //will require refinement for more complicated requests
     std::string accept_string = request_string.substr(request_string.find("Accept:"), 20);
@@ -55,13 +74,7 @@ HTTPHeader HTTPhandler::getHTTPHeader(char *raw_data) {
     if (accept_string.find("text/html") != std::string::npos) {
         httpHeader.content_type = "text/html";
     }
-
-
     //GET /test HTTP/1.1 URI is in the middle. so URI might be / as start space or http as end.
-
-
-
-
     return httpHeader;
 
 }

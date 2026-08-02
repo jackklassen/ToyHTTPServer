@@ -7,8 +7,8 @@ int main() {
     //any request gets back valid HTTP (done)
     //proper method gets valid HTTP (done)
     //proper headers in full get valid HTTP (done)
-    //proper requests gets a HTTP that from a file (in progress)
-    //more than 1 client can access at a time. (todo)
+    //proper requests gets a HTTP that from a file (done)
+    //more than 1 client can access at a time. (done)
 
     Server server = Server();
 

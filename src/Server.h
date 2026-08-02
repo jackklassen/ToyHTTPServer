@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <fstream>
 
+#include "HTTPhandler.h"
 
 
 class Server {
@@ -21,6 +22,8 @@ class Server {
 
     public:
     Server();
+
+    void handleClient(int clientSocket);
 
     void bindAndListen();
 

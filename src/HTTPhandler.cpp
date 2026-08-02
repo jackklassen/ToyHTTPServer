@@ -65,8 +65,6 @@ HTTPHeader HTTPhandler::getHTTPHeader(char *raw_data) {
 
     std::vector<std::string> first_part_split = SplitAtSpace(first_part);
     httpHeader.uri = first_part_split[1];
-    std::cout << "URI looks like: " << httpHeader.uri << std::endl;
-
     //this is not carefully grabbing just the accept but instead grabs only a chunk of chars
     //will require refinement for more complicated requests
     std::string accept_string = request_string.substr(request_string.find("Accept:"), 20);

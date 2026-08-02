@@ -1,5 +1,5 @@
 //
-// Created by Jack klassen on 2026-07-29.
+// Created by Jack Klassen on 2026-07-29.
 //
 
 #include "Server.h"
@@ -36,9 +36,17 @@ void Server::bindAndListen() {
 
 
         HTTPHeader RequestHeader = HTTPhandler::getHTTPHeader(buffer);
+        std::string body;
 
-        std::string body = "<h1>hello</h1> <p> I am an HTTP thingy </p>";
+        if (RequestHeader.uri == "/") {
+            body = getFile("/index");
+        } else {
+            body = getFile(RequestHeader.uri);
+        }
 
+        if (body == "") {
+            body = "404 Not Found";
+        }
 
         std::string response = handler.response( body, RequestHeader, "text/html" );
 
@@ -48,3 +56,26 @@ void Server::bindAndListen() {
     close(serverSocket);
 }
 
+std::string Server::getFile(std::string filename) {
+
+    std::ifstream file_html("../assets"+filename + ".html");
+
+
+    std::ifstream file_txt("../assets"+filename + ".txt");
+
+    std::string return_string;
+    std::ostringstream string_stream;
+
+    if (file_html.is_open()) {
+        string_stream << file_html.rdbuf();
+        return_string = string_stream.str();
+        std::cout << return_string << std::endl; ///the only real issue is handling pathing.
+    } else if (file_txt.is_open()) {
+        string_stream << file_txt.rdbuf();
+        return_string = string_stream.str();
+    } else {
+        return_string = "";
+    }
+
+    return return_string;
+}

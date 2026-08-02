@@ -1,5 +1,5 @@
 //
-// Created by Jack klassen on 2026-07-30.
+// Created by Jack Klassen on 2026-07-30.
 //
 
 #include "HTTPhandler.h"
@@ -13,7 +13,6 @@ int HTTPhandler::DetermineCode(const HTTPHeader &request) {
     if (request.method == "BAD") {
         code = 500; //server error
     }else {
-
         if (request.method == "GET") {
             if (request.content_type == "text/html") {
                 code = 200;
@@ -25,19 +24,21 @@ int HTTPhandler::DetermineCode(const HTTPHeader &request) {
     return code;
 }
 
-std::string HTTPhandler::response(const std::string& body, const HTTPHeader& request, std::string content_type) {
+std::string HTTPhandler::response(std::string& body, const HTTPHeader& request, std::string content_type) {
     int code = 500;
-
     code = DetermineCode(request);
 
+    if (code != 200) {
+        body = "Error code: " + std::to_string(code) + " " + StatusCode[code];
+    } else if (body == "404 Not Found") {
+        //by no means the right way to do this.
+        code = 404;
+    }
 
     std::string response = "HTTP/1.1 " + std::to_string(code) + " " +  StatusCode[code] +  "\r\n" +
                            std::format("Content-Type: {}\r\n", content_type) +
                            std::format("Content-Length: {}\r\n", body.length()) +
                            "Connection: close\r\n" + "\r\n";
-    std::cout << response;
-    // when errors happen it should respond with error message
-
     return response + body;
 }
 
@@ -74,7 +75,6 @@ HTTPHeader HTTPhandler::getHTTPHeader(char *raw_data) {
     if (accept_string.find("text/html") != std::string::npos) {
         httpHeader.content_type = "text/html";
     }
-    //GET /test HTTP/1.1 URI is in the middle. so URI might be / as start space or http as end.
     return httpHeader;
 
 }

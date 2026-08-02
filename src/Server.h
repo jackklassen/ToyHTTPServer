@@ -1,5 +1,5 @@
 //
-// Created by Jack klassen on 2026-07-29.
+// Created by Jack Klassen on 2026-07-29.
 //
 
 #ifndef HTTPSERVER_SERVER_H
@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <fstream>
 
 
 
@@ -22,6 +23,15 @@ class Server {
     Server();
 
     void bindAndListen();
+
+
+
+    /**
+     *
+     * @param filename
+     * @return returns file data as string if file exists as .html or .txt if it exists otherwise returns empty string
+     */
+    std::string getFile(std::string filename);
 
 };
 

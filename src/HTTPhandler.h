@@ -1,5 +1,5 @@
 //
-// Created by Jack klassen on 2026-07-30.
+// Created by Jack Klassen on 2026-07-30.
 //
 
 #ifndef HTTPSERVER_HTTPHANDLER_H
@@ -32,7 +32,7 @@ class HTTPhandler {
      * @param code
      * @return
      */
-    int DetermineCode(const HTTPHeader &request);
+    static int DetermineCode(const HTTPHeader &request);
 
     /**
      * takes in body, code and content type and spits out a valid HTTP response
@@ -43,7 +43,7 @@ class HTTPhandler {
      * @param content_type
      * @return assembled HTTP respose
      */
-    std::string response(const std::string& body = "I need a body", const HTTPHeader& request = {"BAD", 599,"",""}, std::string content_type = "text/plain");
+    std::string response(std::string& body, const HTTPHeader& request = {"BAD", 599,"",""}, std::string content_type = "text/plain");
 
     /**
      *
